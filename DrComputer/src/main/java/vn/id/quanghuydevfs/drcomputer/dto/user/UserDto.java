@@ -1,4 +1,4 @@
-package vn.id.quanghuydevfs.drcomputer.controller.dto.auth;
+package vn.id.quanghuydevfs.drcomputer.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,16 +6,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import vn.id.quanghuydevfs.drcomputer.model.user.Roles;
 
-import javax.management.relation.Role;
-
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterDto {
+public class UserDto {
     private String fullname;
     private String email;
-    private String password;
     private String phoneNumber;
     private Roles role;
 }

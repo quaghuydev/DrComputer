@@ -1,4 +1,4 @@
-package vn.id.quanghuydevfs.drcomputer.token;
+package vn.id.quanghuydevfs.drcomputer.model.token;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

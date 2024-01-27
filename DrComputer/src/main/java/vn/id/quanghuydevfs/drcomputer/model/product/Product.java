@@ -1,17 +1,18 @@
 package vn.id.quanghuydevfs.drcomputer.model.product;
 
 import jakarta.persistence.*;
-import vn.id.quanghuydevfs.drcomputer.model.product.Category;
+import lombok.Data;
+import vn.id.quanghuydevfs.drcomputer.model.enums.Category;
 
 @Entity
+@Data
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private String title;
     private String description;
-    @ManyToOne
-    @JoinColumn(name = "categories_id")
+
     private Category category;
     private int price;
     private int storage;

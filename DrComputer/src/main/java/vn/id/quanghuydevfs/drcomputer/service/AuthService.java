@@ -14,16 +14,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.stereotype.Service;
-import vn.id.quanghuydevfs.drcomputer.controller.dto.auth.AuthenticationDto;
+import vn.id.quanghuydevfs.drcomputer.dto.auth.AuthenticationDto;
 import vn.id.quanghuydevfs.drcomputer.controller.auth.AuthenticationResponse;
-import vn.id.quanghuydevfs.drcomputer.controller.dto.auth.RegisterDto;
-import vn.id.quanghuydevfs.drcomputer.model.user.Roles;
+import vn.id.quanghuydevfs.drcomputer.dto.auth.RegisterDto;
 import vn.id.quanghuydevfs.drcomputer.model.user.User;
 import vn.id.quanghuydevfs.drcomputer.repository.UserRepository;
 import vn.id.quanghuydevfs.drcomputer.security.jwt.JwtService;
-import vn.id.quanghuydevfs.drcomputer.token.Token;
-import vn.id.quanghuydevfs.drcomputer.token.TokenRepository;
-import vn.id.quanghuydevfs.drcomputer.token.TokenType;
+import vn.id.quanghuydevfs.drcomputer.model.token.Token;
+import vn.id.quanghuydevfs.drcomputer.model.token.TokenRepository;
+import vn.id.quanghuydevfs.drcomputer.model.token.TokenType;
 
 import java.io.IOException;
 
@@ -41,7 +40,7 @@ public class AuthService implements LogoutHandler {
                 .fullname(request.getFullname())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .roles(Roles.ADMIN)
+                .roles(request.getRole())
                 .phoneNumber(request.getPhoneNumber())
                 .build();
         var savedUser = repository.save(user);

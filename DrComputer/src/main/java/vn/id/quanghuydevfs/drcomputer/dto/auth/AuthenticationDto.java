@@ -1,4 +1,4 @@
-package vn.id.quanghuydevfs.drcomputer.controller.dto.auth;
+package vn.id.quanghuydevfs.drcomputer.dto.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -9,28 +9,30 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static vn.id.quanghuydevfs.drcomputer.model.user.Permission.*;
+
 @Getter
 @RequiredArgsConstructor
 public enum Roles {
     USER(Collections.emptySet()),
     ADMIN(
             Set.of(
-                    Permission.ADMIN_READ,
-                    Permission.ADMIN_UPDATE,
-                    Permission.ADMIN_DELETE,
-                    Permission.ADMIN_CREATE,
-                    Permission.MANAGER_READ,
-                    Permission.MANAGER_UPDATE,
-                    Permission.MANAGER_DELETE,
-                    Permission.MANAGER_CREATE
+                    ADMIN_READ,
+                    ADMIN_UPDATE,
+                    ADMIN_DELETE,
+                    ADMIN_CREATE,
+                    MANAGER_READ,
+                    MANAGER_UPDATE,
+                    MANAGER_DELETE,
+                    MANAGER_CREATE
             )
     ),
     MANAGER(
             Set.of(
-                    Permission.MANAGER_READ,
-                    Permission.MANAGER_UPDATE,
-                    Permission.MANAGER_DELETE,
-                    Permission.MANAGER_CREATE
+                    MANAGER_READ,
+                    MANAGER_UPDATE,
+                    MANAGER_DELETE,
+                    MANAGER_CREATE
             )
     );
 

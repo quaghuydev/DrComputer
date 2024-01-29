@@ -1,9 +1,10 @@
-package vn.id.quanghuydevfs.drcomputer.controller.user;
+package vn.id.quanghuydevfs.drcomputer.controller.admin.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import vn.id.quanghuydevfs.drcomputer.controller.auth.AuthenticationResponse;
 import vn.id.quanghuydevfs.drcomputer.dto.user.UserDto;
@@ -14,7 +15,8 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/users")
+@RequestMapping("/api/v1/management/users")
+@PreAuthorize("hasRole('ADMIN')")
 public class UserController {
     private final UserService userService;
 

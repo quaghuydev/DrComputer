@@ -1,10 +1,12 @@
 package vn.id.quanghuydevfs.drcomputer.model.product;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import vn.id.quanghuydevfs.drcomputer.model.enums.Category;
+import lombok.*;
 
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class Product {
     @Id

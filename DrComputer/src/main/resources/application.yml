@@ -6,6 +6,7 @@ spring:
     properties:
       hibernate:
         globally_quoted_identifiers: true
+        dialect: org.hibernate.dialect.MySQLDialect
   datasource:
     url: jdbc:mysql://localhost/drcomputer
     username: root

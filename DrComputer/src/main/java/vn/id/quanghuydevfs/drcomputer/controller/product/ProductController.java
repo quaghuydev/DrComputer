@@ -3,10 +3,7 @@ package vn.id.quanghuydevfs.drcomputer.controller.product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import vn.id.quanghuydevfs.drcomputer.dto.user.ProductDto;
 import vn.id.quanghuydevfs.drcomputer.model.product.Product;
 import vn.id.quanghuydevfs.drcomputer.service.ProductService;
 

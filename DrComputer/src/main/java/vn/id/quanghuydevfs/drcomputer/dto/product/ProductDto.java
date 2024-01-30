@@ -1,4 +1,4 @@
-package vn.id.quanghuydevfs.drcomputer.dto.user;
+package vn.id.quanghuydevfs.drcomputer.dto.product;
 
 import lombok.Data;
 

@@ -6,12 +6,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import vn.id.quanghuydevfs.drcomputer.dto.user.ProductDto;
+import vn.id.quanghuydevfs.drcomputer.dto.product.ProductDto;
 import vn.id.quanghuydevfs.drcomputer.model.product.Category;
 import vn.id.quanghuydevfs.drcomputer.model.product.Product;
 import vn.id.quanghuydevfs.drcomputer.repository.ProductRepsitory;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service

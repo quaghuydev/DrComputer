@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import vn.id.quanghuydevfs.drcomputer.dto.auth.AuthenticationDto;
 import vn.id.quanghuydevfs.drcomputer.dto.auth.RegisterDto;
@@ -12,6 +13,7 @@ import vn.id.quanghuydevfs.drcomputer.service.AuthService;
 import java.io.IOException;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api/v1/auth")
 public class AuthController {
     @Autowired
@@ -23,7 +25,7 @@ public class AuthController {
         return ResponseEntity.ok(authService.register(request));
     }
 
-    @PostMapping("/authenticate")
+    @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationDto request) {
         return ResponseEntity.ok(authService.authenticate(request));
     }
@@ -33,5 +35,13 @@ public class AuthController {
             HttpServletResponse response
     ) throws IOException {
         authService.refreshToken(request, response);
+    }
+    @PostMapping("/logout")
+    public void logout(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            Authentication authentication
+    ) throws IOException {
+        authService.logout(request, response,authentication);
     }
 }

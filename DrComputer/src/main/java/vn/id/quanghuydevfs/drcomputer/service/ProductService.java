@@ -63,6 +63,8 @@ public class ProductService {
                 .category(Category.valueOf(p.getCategory().toUpperCase()))
                 .price(p.getPrice())
                 .storage(p.getStorage())
+                .img1(p.getImg1())
+                .img2(p.getImg2())
                 .build();
         productRepository.save(product);
         return product;
@@ -76,6 +78,8 @@ public class ProductService {
         product.setCategory(Category.valueOf(p.getCategory().toUpperCase()));
         product.setPrice(p.getPrice());
         product.setStorage(p.getStorage());
+        product.setImg1(p.getImg1());
+        product.setImg2(p.getImg2());
         productRepository.save(product);
         return product;
     }

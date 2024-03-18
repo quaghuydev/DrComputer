@@ -18,5 +18,7 @@ public class Product {
     private Category category;
     private int price;
     private int storage;
+    private String img1;
+    private String img2;
 
 }

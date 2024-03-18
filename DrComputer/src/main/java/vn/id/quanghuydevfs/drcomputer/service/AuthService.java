@@ -1,7 +1,6 @@
 package vn.id.quanghuydevfs.drcomputer.service;
 
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,6 +16,7 @@ import org.springframework.stereotype.Service;
 import vn.id.quanghuydevfs.drcomputer.dto.auth.AuthenticationDto;
 import vn.id.quanghuydevfs.drcomputer.controller.auth.AuthenticationResponse;
 import vn.id.quanghuydevfs.drcomputer.dto.auth.RegisterDto;
+import vn.id.quanghuydevfs.drcomputer.dto.user.UserDto;
 import vn.id.quanghuydevfs.drcomputer.model.user.User;
 import vn.id.quanghuydevfs.drcomputer.repository.UserRepository;
 import vn.id.quanghuydevfs.drcomputer.security.jwt.JwtService;
@@ -47,9 +47,16 @@ public class AuthService implements LogoutHandler {
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
         saveUserToken(savedUser, jwtToken);
+        var userDto = new UserDto();
+        userDto.setEmail(user.getEmail());
+        userDto.setFullname(user.getFullname());
+        userDto.setPhoneNumber(user.getPhoneNumber());
+        userDto.setRole(user.getRoles());
+
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
+                .user(userDto)
                 .build();
     }
 
@@ -66,9 +73,17 @@ public class AuthService implements LogoutHandler {
         var refreshToken = jwtService.generateRefreshToken(user);
         revokeAllUserTokens(user);
         saveUserToken(user, jwtToken);
+
+        var userDto = new UserDto();
+        userDto.setEmail(user.getEmail());
+        userDto.setFullname(user.getFullname());
+        userDto.setPhoneNumber(user.getPhoneNumber());
+        userDto.setRole(user.getRoles());
+
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
+                .user(userDto)
                 .build();
     }
 
@@ -101,7 +116,7 @@ public class AuthService implements LogoutHandler {
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         final String refreshToken;
         final String userEmail;
-        if (authHeader == null ||!authHeader.startsWith("Bearer ")) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return;
         }
         refreshToken = authHeader.substring(7);
@@ -130,7 +145,7 @@ public class AuthService implements LogoutHandler {
     ) {
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
-        if (authHeader == null ||!authHeader.startsWith("Bearer ")) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return;
         }
         jwt = authHeader.substring(7);

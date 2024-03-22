@@ -67,7 +67,7 @@ public class ProductService {
                 .img2(p.getImg2())
                 .sale(p.getSale())
                 .build();
-        productRepository.save(product);
+        productRepository.saveAndFlush(product);
         return product;
     }
 
@@ -82,7 +82,7 @@ public class ProductService {
         product.setImg1(p.getImg1());
         product.setImg2(p.getImg2());
         product.setSale(p.getSale());
-        productRepository.save(product);
+        productRepository.saveAndFlush(product);
         return product;
     }
 

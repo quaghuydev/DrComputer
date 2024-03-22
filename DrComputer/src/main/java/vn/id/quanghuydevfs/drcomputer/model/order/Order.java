@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import vn.id.quanghuydevfs.drcomputer.model.user.User;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,14 +17,14 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Order {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-    private String Customer;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+    private String customer;
     private String street;
     private String province;
     private String district;
     private String ward;
-
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderDetail> orderDetails;
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private User user;
 }

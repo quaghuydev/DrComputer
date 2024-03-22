@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import vn.id.quanghuydevfs.drcomputer.model.product.Product;
 
+import java.util.UUID;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -14,8 +16,8 @@ import vn.id.quanghuydevfs.drcomputer.model.product.Product;
 @Builder
 public class OrderDetail {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;

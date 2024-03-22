@@ -22,12 +22,14 @@ import java.util.Map;
 public class CartService implements CartRepository {
     @Autowired
     private final ProductRepsitory productRepository;
-    private Map<Product, Integer> products = new HashMap<>();
+    private final Map<Product, Integer> products = new HashMap<>();
 
     @Override
     public void addProduct(Product product) {
         if (products.containsKey(product)) {
             products.replace(product, products.get(product) + 1);
+        } else {
+            products.put(product, 1);
         }
     }
 
@@ -56,7 +58,6 @@ public class CartService implements CartRepository {
                 throw new NotEnoughProductsInStockException(product);
             entry.getKey().setStorage(product.getStorage() - entry.getValue());
         }
-        productRepository.saveAllAndFlush(products.keySet());
         products.clear();
     }
 
@@ -64,7 +65,7 @@ public class CartService implements CartRepository {
     public BigDecimal getTotal() {
         return products.entrySet().stream()
                 .map(entry -> {
-                    BigDecimal productPrice = new BigDecimal(entry.getKey().getPrice());
+                    BigDecimal productPrice = BigDecimal.valueOf(entry.getKey().getPrice() - entry.getKey().getPrice() * entry.getKey().getSale());
                     return productPrice.multiply(BigDecimal.valueOf(entry.getValue()));
                 })
                 .reduce(BigDecimal::add)

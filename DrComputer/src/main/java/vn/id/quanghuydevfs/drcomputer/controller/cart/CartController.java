@@ -10,6 +10,7 @@ import vn.id.quanghuydevfs.drcomputer.model.product.Product;
 import vn.id.quanghuydevfs.drcomputer.service.CartService;
 import vn.id.quanghuydevfs.drcomputer.service.ProductService;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 @RestController
@@ -30,7 +31,7 @@ public class CartController {
     @GetMapping("/cart/add/{id}")
     public ResponseEntity<Map<Product, Integer>> addCart(@PathVariable Long id) {
         productService.getProductById(id).ifPresent(cartService::addProduct);
-        return shoppingCart();
+        return ResponseEntity.ok(cartService.getProductsInCart());
     }
 
     @DeleteMapping("/cart/delete/{id}")
@@ -39,9 +40,13 @@ public class CartController {
         return shoppingCart();
     }
 
-    @DeleteMapping("/cart/checkout/")
-    public ResponseEntity<Map<Product, Integer>> checkout(@PathVariable Long id) throws NotEnoughProductsInStockException {
+    @GetMapping("/cart/checkout")
+    public ResponseEntity<Map<Product, Integer>> checkout() throws NotEnoughProductsInStockException {
         cartService.checkout();
         return shoppingCart();
+    }
+    @GetMapping("/cart/total")
+    public ResponseEntity<BigDecimal> total() {
+        return ResponseEntity.ok(cartService.getTotal());
     }
 }

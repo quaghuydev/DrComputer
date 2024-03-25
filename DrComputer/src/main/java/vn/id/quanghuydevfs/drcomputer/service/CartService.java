@@ -9,7 +9,7 @@ import org.springframework.web.context.WebApplicationContext;
 import vn.id.quanghuydevfs.drcomputer.exception.NotEnoughProductsInStockException;
 import vn.id.quanghuydevfs.drcomputer.model.product.Product;
 import vn.id.quanghuydevfs.drcomputer.repository.CartRepository;
-import vn.id.quanghuydevfs.drcomputer.repository.ProductRepsitory;
+import vn.id.quanghuydevfs.drcomputer.repository.ProductRepository;
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -21,7 +21,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CartService implements CartRepository {
     @Autowired
-    private final ProductRepsitory productRepository;
+    private final ProductRepository productRepository;
     private final Map<Product, Integer> products = new HashMap<>();
 
     @Override

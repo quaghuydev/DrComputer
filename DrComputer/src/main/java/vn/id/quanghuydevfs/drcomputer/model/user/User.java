@@ -1,5 +1,6 @@
 package vn.id.quanghuydevfs.drcomputer.model.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,15 +22,17 @@ import java.util.List;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
-
     private String fullname;
     @Column(nullable = false)
+    @JsonIgnore
     private String password;
     @Column(nullable = false, unique = true)
     private String email;
     private String phoneNumber;
     @Enumerated(EnumType.STRING)
+    @JsonIgnore
     private Roles roles;
 
     @Override

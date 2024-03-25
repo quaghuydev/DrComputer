@@ -8,10 +8,8 @@ import org.springframework.stereotype.Repository;
 import vn.id.quanghuydevfs.drcomputer.model.product.Category;
 import vn.id.quanghuydevfs.drcomputer.model.product.Product;
 
-import java.util.List;
-
 @Repository
-public interface ProductRepsitory extends JpaRepository<Product, Long>, PagingAndSortingRepository<Product, Long> {
+public interface ProductRepository extends JpaRepository<Product, Long>, PagingAndSortingRepository<Product, Long> {
 
     Page<Product> getProductsByTitleContainsIgnoreCase(String name, Pageable pageable);
 

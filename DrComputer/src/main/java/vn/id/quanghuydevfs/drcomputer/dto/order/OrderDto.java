@@ -1,9 +1,9 @@
 package vn.id.quanghuydevfs.drcomputer.dto.order;
 
 import lombok.Data;
+import vn.id.quanghuydevfs.drcomputer.dto.product.ProductItemDto;
 import vn.id.quanghuydevfs.drcomputer.dto.user.UserDto;
-import vn.id.quanghuydevfs.drcomputer.model.order.OrderDetail;
-import vn.id.quanghuydevfs.drcomputer.model.user.User;
+import vn.id.quanghuydevfs.drcomputer.model.order.OrderItem;
 
 import java.util.List;
 @Data
@@ -13,6 +13,6 @@ public class OrderDto {
     private String province;
     private String district;
     private String ward;
-    private List<OrderDetail> orderDetails;
+    private List<ProductItemDto> products;
     private UserDto user;
 }

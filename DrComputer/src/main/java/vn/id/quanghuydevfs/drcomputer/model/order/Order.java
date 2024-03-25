@@ -1,5 +1,7 @@
 package vn.id.quanghuydevfs.drcomputer.model.order;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,8 +9,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import vn.id.quanghuydevfs.drcomputer.model.user.User;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import java.util.Set;
 
 @Entity
 @Data
@@ -17,14 +22,35 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Order {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String customer;
     private String street;
     private String province;
     private String district;
     private String ward;
     @ManyToOne
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<OrderItem> orderItems;
+
+    private BigDecimal totalAmount;
+    private LocalDate createdAt;
+    private LocalDate updatedAt;
+    public void addOrderItem(OrderItem item) {
+        if (orderItems == null) {
+            orderItems = new ArrayList<>();
+        }
+        orderItems.add(item);
+        item.setOrder(this);
+    }
+
+    public void removeOrderItem(OrderItem item) {
+        orderItems.remove(item);
+        item.setOrder(null);
+    }
+
 }

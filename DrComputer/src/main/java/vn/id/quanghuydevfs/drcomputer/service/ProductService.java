@@ -9,14 +9,14 @@ import org.springframework.stereotype.Service;
 import vn.id.quanghuydevfs.drcomputer.dto.product.ProductDto;
 import vn.id.quanghuydevfs.drcomputer.model.product.Category;
 import vn.id.quanghuydevfs.drcomputer.model.product.Product;
-import vn.id.quanghuydevfs.drcomputer.repository.ProductRepsitory;
+import vn.id.quanghuydevfs.drcomputer.repository.ProductRepository;
 
 import java.util.Optional;
 
 @Service
 public class ProductService {
     @Autowired
-    private ProductRepsitory productRepository;
+    private ProductRepository productRepository;
 
 
     public Page<Product> getProducts(int page, int size, String sort, String category, String search) {

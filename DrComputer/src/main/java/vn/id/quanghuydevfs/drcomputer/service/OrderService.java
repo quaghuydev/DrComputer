@@ -1,72 +1,99 @@
 package vn.id.quanghuydevfs.drcomputer.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import vn.id.quanghuydevfs.drcomputer.controller.order.OrderResponse;
 import vn.id.quanghuydevfs.drcomputer.dto.order.OrderDto;
+import vn.id.quanghuydevfs.drcomputer.dto.product.ProductItemDto;
+import vn.id.quanghuydevfs.drcomputer.exception.ResourceNotFoundException;
 import vn.id.quanghuydevfs.drcomputer.model.order.Order;
-import vn.id.quanghuydevfs.drcomputer.model.order.OrderDetail;
+import vn.id.quanghuydevfs.drcomputer.model.order.OrderItem;
+import vn.id.quanghuydevfs.drcomputer.model.order.OrderItemPK;
+import vn.id.quanghuydevfs.drcomputer.model.product.Product;
 import vn.id.quanghuydevfs.drcomputer.model.user.User;
 import vn.id.quanghuydevfs.drcomputer.repository.OrderDetailRepository;
 import vn.id.quanghuydevfs.drcomputer.repository.OrderRepository;
+import vn.id.quanghuydevfs.drcomputer.repository.ProductRepository;
 import vn.id.quanghuydevfs.drcomputer.repository.UserRepository;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 @Service
+
 @RequiredArgsConstructor
 public class OrderService {
-    @Autowired
     private final OrderRepository repository;
     private final OrderDetailRepository detailRepository;
     private final UserRepository userRepository;
+    private final ProductRepository productRepository;
 
     public List<Order> getOrders() {
         return repository.findAll();
     }
 
-    public OrderResponse create(OrderDto o) {
-        List<OrderDetail> orderDetails = o.getOrderDetails().stream()
-                .map(orderDetailDto -> OrderDetail.builder()
-                        .product(orderDetailDto.getProduct())
-                        .quantity(orderDetailDto.getQuantity())
-                        .subtotal(orderDetailDto.getSubtotal())
-                        .build())
-                .toList();
-        Optional<User> user = userRepository.findByEmail(o.getUser().getEmail());
+    @Transactional
+    public OrderResponse createOrder(OrderDto orderDto) throws ResourceNotFoundException {
+        BigDecimal totalAmount = BigDecimal.ZERO;
+        User user = userRepository.findByEmail(orderDto.getUser().getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
         Order order = Order.builder()
-                .customer(o.getCustomer())
-                .street(o.getStreet())
-                .province(o.getProvince())
-                .district(o.getDistrict())
-                .ward(o.getWard())
-                .user(user.get())
+                .user(user)
+                .street(orderDto.getStreet())
+                .ward(orderDto.getWard())
+                .district(orderDto.getDistrict())
+                .province(orderDto.getProvince())
+                .createdAt(LocalDate.now())
+                .orderItems(new ArrayList<>())
+                .updatedAt(LocalDate.now())
                 .build();
-        // Lưu Order vào cơ sở dữ liệu để tạo order_id
-        repository.save(order);
-        // Thiết lập order cho từng OrderDetail
-        orderDetails.forEach(orderDetail -> orderDetail.setOrder(order));
-        detailRepository.saveAll(orderDetails);
 
-        // Lưu danh sách OrderDetails vào cơ sở dữ liệu
+        // Save the Order immediately to ensure it has an ID.
+        order = repository.save(order);
 
-        return OrderResponse.builder()
+        for (ProductItemDto p : orderDto.getProducts()) {
+            Product product = productRepository.findById(p.getProductId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+            OrderItem orderItem = OrderItem.builder()
+                    .id(new OrderItemPK(order.getId(), product.getId()))
+                    .order(order)
+                    .product(product)
+                    .price(product.getPrice())
+                    .quantity(p.getQuantity())
+                    .build();
+
+            order.addOrderItem(orderItem);
+
+            totalAmount = totalAmount.add(
+                    BigDecimal.valueOf(
+                            calculatePriceAfterSale(product.getSale(), product.getPrice()) * p.getQuantity()
+                    )
+            );
+        }
+
+        order.setTotalAmount(totalAmount);
+        order = repository.save(order);
+        return  OrderResponse.builder()
+                .user(orderDto.getUser())
                 .order(order)
-                .orderDetails(orderDetails)
-                .user(o.getUser())
-                .build();
+                .build();// Save the Order again, now with its OrderItems.
     }
 
-    public Order getOrderById(UUID id) {
+
+
+
+    public static long calculatePriceAfterSale(double sale, long price) {
+        return (long) (price - price * sale);
+    }
+    public Order getOrderById(long id) {
         return repository.findById(id).orElse(null);
     }
 
-    public Boolean delete(UUID id) {
+    public Boolean delete(long id) {
         var order = repository.findById(id).orElse(null);
         if (order != null) {
             repository.deleteById(id);
@@ -77,5 +104,12 @@ public class OrderService {
 
     }
 
+    public OrderItem getOrderDetailById(long id) {
+        return detailRepository.findById(id).orElse(null);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(calculatePriceAfterSale(0.15, 50000));
+    }
 }
 

@@ -42,11 +42,15 @@ public class OrderService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         Order order = Order.builder()
+                .fullname(orderDto.getFullname())
                 .user(user)
                 .street(orderDto.getStreet())
                 .ward(orderDto.getWard())
                 .district(orderDto.getDistrict())
                 .province(orderDto.getProvince())
+                .isPaied(orderDto.isPaied())
+                .paymentMethod(orderDto.getPayMethod())
+                .status(0)
                 .createdAt(LocalDate.now())
                 .orderItems(new ArrayList<>())
                 .updatedAt(LocalDate.now())
@@ -77,18 +81,17 @@ public class OrderService {
 
         order.setTotalAmount(totalAmount);
         order = repository.save(order);
-        return  OrderResponse.builder()
+        return OrderResponse.builder()
                 .user(orderDto.getUser())
                 .order(order)
                 .build();// Save the Order again, now with its OrderItems.
     }
 
 
-
-
     public static long calculatePriceAfterSale(double sale, long price) {
         return (long) (price - price * sale);
     }
+
     public Order getOrderById(long id) {
         return repository.findById(id).orElse(null);
     }

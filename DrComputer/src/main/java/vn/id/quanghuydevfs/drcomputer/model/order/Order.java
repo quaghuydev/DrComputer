@@ -24,10 +24,13 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String fullname;
     private String street;
     private String province;
     private String district;
     private String ward;
+    private String numberHouse;
+    private String note;
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonIgnore
@@ -36,10 +39,15 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<OrderItem> orderItems;
+    private boolean isPaied;
+    @Enumerated(EnumType.STRING)
+    private PaymentMethod paymentMethod;
+    private int status;
 
     private BigDecimal totalAmount;
     private LocalDate createdAt;
     private LocalDate updatedAt;
+
     public void addOrderItem(OrderItem item) {
         if (orderItems == null) {
             orderItems = new ArrayList<>();

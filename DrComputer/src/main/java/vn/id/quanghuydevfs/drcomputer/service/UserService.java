@@ -2,9 +2,12 @@ package vn.id.quanghuydevfs.drcomputer.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import vn.id.quanghuydevfs.drcomputer.controller.auth.AuthenticationResponse;
+import vn.id.quanghuydevfs.drcomputer.dto.auth.RegisterDto;
+import vn.id.quanghuydevfs.drcomputer.dto.log.LogReqDTO;
 import vn.id.quanghuydevfs.drcomputer.dto.user.UserDto;
 import vn.id.quanghuydevfs.drcomputer.model.token.Token;
 import vn.id.quanghuydevfs.drcomputer.model.token.TokenRepository;
@@ -14,6 +17,7 @@ import vn.id.quanghuydevfs.drcomputer.repository.UserRepository;
 import vn.id.quanghuydevfs.drcomputer.security.jwt.JwtService;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +41,11 @@ public class UserService {
             return false;
         }
     }
+    @Transactional
+    public Optional<User> getUserById(Long id) {
+        return repository.findById(id);
+    }
+
     public AuthenticationResponse updateUserById(Long id, UserDto u){
         var user = repository.findById(id).orElse(null);
         if (user!=null){

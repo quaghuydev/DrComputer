@@ -9,7 +9,7 @@ import java.util.Date;
 
 public class test {
     public static void main(String[] args) throws NoSuchAlgorithmException {
-        System.out.println(LocalTime.now());
+        System.out.println(LocalDateTime.now());
     }
 
 }

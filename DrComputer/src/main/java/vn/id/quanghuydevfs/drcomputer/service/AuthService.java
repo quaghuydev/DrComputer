@@ -16,7 +16,9 @@ import org.springframework.stereotype.Service;
 import vn.id.quanghuydevfs.drcomputer.dto.auth.AuthenticationDto;
 import vn.id.quanghuydevfs.drcomputer.controller.auth.AuthenticationResponse;
 import vn.id.quanghuydevfs.drcomputer.dto.auth.RegisterDto;
+import vn.id.quanghuydevfs.drcomputer.dto.log.LogReqDTO;
 import vn.id.quanghuydevfs.drcomputer.dto.user.UserDto;
+import vn.id.quanghuydevfs.drcomputer.model.log.Log;
 import vn.id.quanghuydevfs.drcomputer.model.user.User;
 import vn.id.quanghuydevfs.drcomputer.repository.UserRepository;
 import vn.id.quanghuydevfs.drcomputer.security.jwt.JwtService;
@@ -34,6 +36,7 @@ public class AuthService implements LogoutHandler {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final LogService logService;
 
     public AuthenticationResponse register(RegisterDto request) {
         var user = User.builder()
@@ -52,7 +55,7 @@ public class AuthService implements LogoutHandler {
         userDto.setFullname(user.getFullname());
         userDto.setPhoneNumber(user.getPhoneNumber());
         userDto.setRole(user.getRoles());
-
+        logService.insertLog(LogReqDTO.builder().user(userDto).content("register").build());
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
@@ -79,6 +82,7 @@ public class AuthService implements LogoutHandler {
         userDto.setFullname(user.getFullname());
         userDto.setPhoneNumber(user.getPhoneNumber());
         userDto.setRole(user.getRoles());
+        logService.insertLog(LogReqDTO.builder().user(userDto).content("login").build());
 
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
@@ -132,6 +136,7 @@ public class AuthService implements LogoutHandler {
                         .accessToken(accessToken)
                         .refreshToken(refreshToken)
                         .build();
+                logService.insertLog(LogReqDTO.builder().user(UserDto.builder().email(userEmail).fullname(user.getFullname()).phoneNumber(user.getPhoneNumber()).role(user.getRoles()).build()).content("refresh token").build());
                 new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
             }
         }

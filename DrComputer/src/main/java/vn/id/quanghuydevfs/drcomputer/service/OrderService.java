@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vn.id.quanghuydevfs.drcomputer.controller.order.OrderResponse;
+import vn.id.quanghuydevfs.drcomputer.dto.log.LogReqDTO;
 import vn.id.quanghuydevfs.drcomputer.dto.order.OrderDto;
 import vn.id.quanghuydevfs.drcomputer.dto.product.ProductItemDto;
+import vn.id.quanghuydevfs.drcomputer.dto.user.UserDto;
 import vn.id.quanghuydevfs.drcomputer.exception.ResourceNotFoundException;
 import vn.id.quanghuydevfs.drcomputer.model.order.Order;
 import vn.id.quanghuydevfs.drcomputer.model.order.OrderItem;
@@ -30,6 +32,7 @@ public class OrderService {
     private final OrderDetailRepository detailRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
+    private final LogService logService;
 
     public List<Order> getOrders() {
         return repository.findAll();
@@ -48,6 +51,8 @@ public class OrderService {
                 .ward(orderDto.getWard())
                 .district(orderDto.getDistrict())
                 .province(orderDto.getProvince())
+                .note(orderDto.getNote())
+                .numberHouse(orderDto.getNumberHouse())
                 .isPaied(orderDto.isPaied())
                 .paymentMethod(orderDto.getPayMethod())
                 .status(0)
@@ -81,6 +86,7 @@ public class OrderService {
 
         order.setTotalAmount(totalAmount);
         order = repository.save(order);
+        logService.insertLog(LogReqDTO.builder().user(UserDto.builder().email(user.getEmail()).fullname(user.getFullname()).phoneNumber(user.getPhoneNumber()).role(user.getRoles()).build()).content("create order "+order.getId()).build());
         return OrderResponse.builder()
                 .user(orderDto.getUser())
                 .order(order)
@@ -89,7 +95,7 @@ public class OrderService {
 
 
     public static long calculatePriceAfterSale(double sale, long price) {
-        return (long) (price - price * sale);
+        return (long) (price - price * (sale / 100));
     }
 
     public Order getOrderById(long id) {
@@ -98,12 +104,16 @@ public class OrderService {
 
     public Boolean delete(long id) {
         var order = repository.findById(id).orElse(null);
+
         if (order != null) {
+            var user = order.getUser();
+            logService.insertLog(LogReqDTO.builder().user(UserDto.builder().email(user.getEmail()).fullname(user.getFullname()).phoneNumber(user.getPhoneNumber()).role(user.getRoles()).build()).content("delete order "+order.getId()).build());
             repository.deleteById(id);
             return true;
         } else {
             return false;
         }
+
 
     }
 

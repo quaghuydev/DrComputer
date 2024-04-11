@@ -1,5 +1,6 @@
 package vn.id.quanghuydevfs.drcomputer.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,9 +15,10 @@ import vn.id.quanghuydevfs.drcomputer.repository.ProductRepository;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ProductService {
-    @Autowired
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
+    private final CategoryService categoryService;
 
 
     public Page<Product> getProducts(int page, int size, String sort, String category, String search) {
@@ -31,12 +33,11 @@ public class ProductService {
         if ("all".equalsIgnoreCase(category)) {
             pageable = PageRequest.of(page - 1, size, sorting);
         } else {
-            Category categoryEnum = Category.valueOf(category.toUpperCase());
             pageable = PageRequest.of(page - 1, size, sorting);
             if (search != null && !search.isEmpty()) {
-                return productRepository.findByCategoryAndTitleContainingIgnoreCase(categoryEnum, search, pageable);
+                return productRepository.findByCategory_ValueContainingIgnoreCaseAndTitleContainingIgnoreCase(category, search, pageable);
             } else {
-                return productRepository.findByCategory(categoryEnum, pageable);
+                return productRepository.findByCategory_Value(category, pageable);
             }
         }
 
@@ -57,10 +58,11 @@ public class ProductService {
     }
 
     public Product add(ProductDto p) {
+        var category = categoryService.getCategoryByValue(p.getCategory());
         var product = Product.builder()
                 .title(p.getTitle())
                 .description(p.getDescription())
-                .category(Category.valueOf(p.getCategory().toUpperCase()))
+                .category(category)
                 .price(p.getPrice())
                 .storage(p.getStorage())
                 .img1(p.getImg1())
@@ -72,11 +74,12 @@ public class ProductService {
     }
 
     public Product update(Long id, ProductDto p) {
+        var category = categoryService.getCategoryByValue(p.getCategory());
         Product product = productRepository.findById(id).orElseThrow();
         product.setId(id);
         product.setTitle(p.getTitle());
         product.setDescription(p.getDescription());
-        product.setCategory(Category.valueOf(p.getCategory().toUpperCase()));
+        product.setCategory(category);
         product.setPrice(p.getPrice());
         product.setStorage(p.getStorage());
         product.setImg1(p.getImg1());

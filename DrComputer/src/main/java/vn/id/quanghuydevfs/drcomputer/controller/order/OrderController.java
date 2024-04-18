@@ -36,7 +36,13 @@ public class OrderController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Boolean> deleteOrder(long id) {
+    public ResponseEntity<Boolean> deleteOrder(@PathVariable long id) {
         return ResponseEntity.ok(service.delete(id));
+    }
+
+    @DeleteMapping("/delete/orders")
+    public ResponseEntity<Void> deleteMultipleOrders(@RequestBody List<Long> ids) {
+        service.deleteMultiple(ids);
+        return ResponseEntity.noContent().build();
     }
 }

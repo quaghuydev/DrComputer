@@ -71,7 +71,7 @@ public class OrderService {
                     .id(new OrderItemPK(order.getId(), product.getId()))
                     .order(order)
                     .product(product)
-                    .price(product.getPrice())
+                    .price((product.getPrice() - product.getSale() * product.getPrice()) * p.getQuantity())
                     .quantity(p.getQuantity())
                     .build();
 
@@ -86,7 +86,7 @@ public class OrderService {
 
         order.setTotalAmount(totalAmount);
         order = repository.save(order);
-        logService.insertLog(LogReqDTO.builder().user(UserDto.builder().email(user.getEmail()).fullname(user.getFullname()).phoneNumber(user.getPhoneNumber()).role(user.getRoles()).build()).content("create order "+order.getId()).build());
+        logService.insertLog(LogReqDTO.builder().user(UserDto.builder().email(user.getEmail()).fullname(user.getFullname()).phoneNumber(user.getPhoneNumber()).role(user.getRoles()).build()).content("create order " + order.getId()).build());
         return OrderResponse.builder()
                 .user(orderDto.getUser())
                 .order(order)
@@ -107,14 +107,23 @@ public class OrderService {
 
         if (order != null) {
             var user = order.getUser();
-            logService.insertLog(LogReqDTO.builder().user(UserDto.builder().email(user.getEmail()).fullname(user.getFullname()).phoneNumber(user.getPhoneNumber()).role(user.getRoles()).build()).content("delete order "+order.getId()).build());
+            logService.insertLog(LogReqDTO.builder().user(UserDto.builder().email(user.getEmail()).fullname(user.getFullname()).phoneNumber(user.getPhoneNumber()).role(user.getRoles()).build()).content("delete order " + order.getId()).build());
             repository.deleteById(id);
             return true;
         } else {
             return false;
         }
-
-
+    }
+    @Transactional
+    public void deleteMultiple(List<Long> ids) {
+        for (Long id : ids) {
+            var order = repository.findById(id).orElse(null);
+            if (order != null) {
+                var user = order.getUser();
+                logService.insertLog(LogReqDTO.builder().user(UserDto.builder().email(user.getEmail()).fullname(user.getFullname()).phoneNumber(user.getPhoneNumber()).role(user.getRoles()).build()).content("delete order " + order.getId()).build());
+                repository.deleteById(id);
+            }
+        }
     }
 
     public OrderItem getOrderDetailById(long id) {

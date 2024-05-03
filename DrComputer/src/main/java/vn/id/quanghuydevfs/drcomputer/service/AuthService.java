@@ -21,9 +21,11 @@ import vn.id.quanghuydevfs.drcomputer.dto.user.UserDto;
 import vn.id.quanghuydevfs.drcomputer.model.token.Token;
 import vn.id.quanghuydevfs.drcomputer.model.token.TokenRepository;
 import vn.id.quanghuydevfs.drcomputer.model.token.TokenType;
+import vn.id.quanghuydevfs.drcomputer.model.user.Roles;
 import vn.id.quanghuydevfs.drcomputer.model.user.User;
 import vn.id.quanghuydevfs.drcomputer.repository.UserRepository;
 import vn.id.quanghuydevfs.drcomputer.security.jwt.JwtService;
+import vn.id.quanghuydevfs.drcomputer.util.payment.vnpay.Config;
 
 import java.io.IOException;
 
@@ -44,6 +46,7 @@ public class AuthService implements LogoutHandler {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .roles(request.getRole())
                 .phoneNumber(request.getPhoneNumber())
+                .isEnabled(request.isEnabled())
                 .build();
         var savedUser = repository.save(user);
         var jwtToken = jwtService.generateToken(user);
@@ -89,6 +92,39 @@ public class AuthService implements LogoutHandler {
                 .refreshToken(refreshToken)
                 .user(userDto)
                 .build();
+    }
+    public AuthenticationResponse authGoogle(UserDto uDto) {
+        var user = repository.findByEmail(uDto.getEmail());
+        if (user.isEmpty()){
+            RegisterDto u = RegisterDto.builder()
+                    .fullname(uDto.getFullname())
+                    .email(uDto.getEmail())
+                    .password(Config.getRandomNumber(9))
+                    .isEnabled(false)
+                    .role(Roles.USER)
+                    .build();
+            return register(u);
+        }else{
+            var jwtToken = jwtService.generateToken(user.get());
+            var refreshToken = jwtService.generateRefreshToken(user.get());
+            revokeAllUserTokens(user.get());
+            saveUserToken(user.get(), jwtToken);
+
+            var userDto = new UserDto();
+            userDto.setEmail(user.get().getEmail());
+            userDto.setFullname(user.get().getFullname());
+            userDto.setPhoneNumber(user.get().getPhoneNumber());
+            userDto.setRole(user.get().getRoles());
+            logService.insertLog(LogReqDTO.builder().user(userDto).content("login by google").build());
+
+            return AuthenticationResponse.builder()
+                    .accessToken(jwtToken)
+                    .refreshToken(refreshToken)
+                    .user(userDto)
+                    .build();
+
+        }
+
     }
 
     private void saveUserToken(User user, String jwtToken) {

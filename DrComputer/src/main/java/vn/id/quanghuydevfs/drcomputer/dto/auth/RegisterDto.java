@@ -18,4 +18,6 @@ public class RegisterDto {
     private String password;
     private String phoneNumber;
     private Roles role;
+    private boolean isEnabled;
+    
 }

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.id.quanghuydevfs.drcomputer.dto.order.OrderDto;
+import vn.id.quanghuydevfs.drcomputer.dto.user.UserDto;
 import vn.id.quanghuydevfs.drcomputer.exception.ResourceNotFoundException;
 import vn.id.quanghuydevfs.drcomputer.model.order.Order;
 import vn.id.quanghuydevfs.drcomputer.service.OrderService;
@@ -40,9 +41,13 @@ public class OrderController {
         return ResponseEntity.ok(service.delete(id));
     }
 
+
+
+
     @DeleteMapping("/delete/orders")
     public ResponseEntity<Void> deleteMultipleOrders(@RequestBody List<Long> ids) {
         service.deleteMultiple(ids);
         return ResponseEntity.noContent().build();
     }
+
 }

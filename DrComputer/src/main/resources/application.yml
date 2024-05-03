@@ -19,3 +19,7 @@ application:
       expiration: 86400000 # a day
       refresh-token:
         expiration: 604800000 # 7 days
+cloudinary:
+  cloud-name: dlhjzufdj
+  api-key: 344655146293534
+  api-secret: ZX6B1Vdw7hGiqRnewuJk0soiygw

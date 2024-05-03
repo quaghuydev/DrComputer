@@ -11,7 +11,6 @@ import vn.id.quanghuydevfs.drcomputer.util.payment.vnpay.Config;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -27,10 +26,10 @@ public class PaymentController {
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
         String orderType = "other";
-        long amount = req.getAmount();
+        long amount = req.getAmount()*100;
         String bankCode = "NCB";
 
-        String vnp_TxnRef = String.valueOf(req.getOrderInfo()+"_"+Config.getRandomNumber(8));
+        String vnp_TxnRef = String.valueOf(req.getOrderInfo());
         String vnp_IpAddr = "127.0.0.1";
 
         String vnp_TmnCode = Config.vnp_TmnCode;

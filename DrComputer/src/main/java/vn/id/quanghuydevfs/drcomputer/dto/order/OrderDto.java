@@ -9,6 +9,7 @@ import vn.id.quanghuydevfs.drcomputer.model.order.PaymentMethod;
 import java.util.List;
 @Data
 public class OrderDto {
+    private long id;
     private String fullname;
     private String street;
     private String province;

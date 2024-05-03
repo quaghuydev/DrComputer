@@ -18,6 +18,7 @@ import vn.id.quanghuydevfs.drcomputer.repository.OrderDetailRepository;
 import vn.id.quanghuydevfs.drcomputer.repository.OrderRepository;
 import vn.id.quanghuydevfs.drcomputer.repository.ProductRepository;
 import vn.id.quanghuydevfs.drcomputer.repository.UserRepository;
+import vn.id.quanghuydevfs.drcomputer.util.payment.vnpay.Config;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -43,8 +44,9 @@ public class OrderService {
         BigDecimal totalAmount = BigDecimal.ZERO;
         User user = userRepository.findByEmail(orderDto.getUser().getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-
+        long idOrder = Long.parseLong(Config.getRandomNumber(10));
         Order order = Order.builder()
+                .id(orderDto.getId())
                 .fullname(orderDto.getFullname())
                 .user(user)
                 .street(orderDto.getStreet())
@@ -114,6 +116,7 @@ public class OrderService {
             return false;
         }
     }
+
     @Transactional
     public void deleteMultiple(List<Long> ids) {
         for (Long id : ids) {

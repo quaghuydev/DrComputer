@@ -7,11 +7,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import vn.id.quanghuydevfs.drcomputer.dto.log.LogReqDTO;
 import vn.id.quanghuydevfs.drcomputer.dto.product.ProductDto;
+import vn.id.quanghuydevfs.drcomputer.dto.user.UserDto;
 import vn.id.quanghuydevfs.drcomputer.model.product.Category;
 import vn.id.quanghuydevfs.drcomputer.model.product.Product;
 import vn.id.quanghuydevfs.drcomputer.repository.ProductRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,7 +23,11 @@ import java.util.Optional;
 public class ProductService {
     private final ProductRepository productRepository;
     private final CategoryService categoryService;
+    private final LogService logService;
 
+    public List<Product> getAll() {
+        return productRepository.findAll();
+    }
 
     public Page<Product> getProducts(int page, int size, String sort, String category, String search) {
         Sort sorting;
@@ -96,6 +104,17 @@ public class ProductService {
             return true;
         } else {
             return false;
+        }
+    }
+
+    @Transactional
+    public void deleteMultiple(List<Long> ids, UserDto user) {
+        for (Long id : ids) {
+            var product = productRepository.findById(id).orElse(null);
+            if (product != null) {
+                logService.insertLog(LogReqDTO.builder().user(UserDto.builder().email(user.getEmail()).fullname(user.getFullname()).phoneNumber(user.getPhoneNumber()).role(user.getRole()).build()).content("delete product with id:  " + product.getId()).build());
+                productRepository.deleteById(id);
+            }
         }
     }
 }

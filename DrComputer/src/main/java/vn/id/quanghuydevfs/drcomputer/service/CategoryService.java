@@ -21,7 +21,7 @@ public class CategoryService {
     }
 
     public Category getCategoryByValue(String value) {
-        return repository.findByValueContainsIgnoreCase(value);
+        return repository.findByValue(value);
     }
 
     public Category addCategory(CategoryReqDto req) {

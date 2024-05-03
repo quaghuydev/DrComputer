@@ -9,6 +9,7 @@ import vn.id.quanghuydevfs.drcomputer.service.CategoryService;
 
 @RestController
 @RequestMapping("api/v1/category")
+@CrossOrigin
 @RequiredArgsConstructor
 public class CategoryController {
     private final CategoryService service;

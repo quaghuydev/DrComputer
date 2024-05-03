@@ -6,5 +6,5 @@ import vn.id.quanghuydevfs.drcomputer.model.product.Category;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
-    Category findByValueContainsIgnoreCase(String value);
+    Category findByValue(String value);
 }

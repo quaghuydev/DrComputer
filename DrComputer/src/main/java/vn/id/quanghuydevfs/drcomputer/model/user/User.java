@@ -34,6 +34,7 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     @JsonIgnore
     private Roles roles;
+    private boolean isEnabled;
 
     @Override
     @JsonIgnore
@@ -68,7 +69,7 @@ public class User implements UserDetails {
     @JsonIgnore
     @Override
     public boolean isEnabled() {
-        return true;
+        return isEnabled;
     }
 
 
